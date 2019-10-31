@@ -1,8 +1,13 @@
 A simple sepolicy denial resolver that will read your denials from a file and resolves and puts them in the respective files.
+
 On basis of my understanding i have done the separation as follows:
+
 	system/sepolicy/private in sepolicy/private
-        system/sepolicy/vendor  in sepolicy/vendor
-        Remaining  in sepolicy/public
+
+	system/sepolicy/vendor  in sepolicy/vendor
+
+	Remaining  in sepolicy/public
+
 The list for the same has been created using the categ.py pressent in the git
 
 #HowTo Use
