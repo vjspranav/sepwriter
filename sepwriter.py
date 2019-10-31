@@ -5,7 +5,7 @@ pub = ['adbd.te', 'apexd.te', 'app.te', 'app_zygote.te', 'asan_extract.te', 'ash
 priv = ['access_vectors', 'adbd.te', 'apex_test_prepostinstall.te', 'apexd.te', 'app.te', 'app_neverallows.te', 'app_zygote.te', 'art_apex_boot_integrity.te', 'art_apex_postinstall.te', 'art_apex_preinstall.te', 'asan_extract.te', 'ashmemd.te', 'atrace.te', 'audioserver.te', 'auditctl.te', 'binder_in_vendor_violators.te', 'binderservicedomain.te', 'blank_screen.te', 'blkid.te', 'blkid_untrusted.te', 'bluetooth.te', 'bluetoothdomain.te', 'bootanim.te', 'bootstat.te', 'bpfloader.te', 'bufferhubd.te', 'bug_map', 'cameraserver.te', 'charger.te', 'clatd.te', 'compat/', 'coredomain.te', 'cppreopts.te', 'crash_dump.te', 'dex2oat.te', 'dexoptanalyzer.te', 'dhcp.te', 'dnsmasq.te', 'domain.te', 'drmserver.te', 'dumpstate.te', 'ephemeral_app.te', 'fastbootd.te', 'file.te', 'file_contexts', 'file_contexts_asan', 'file_contexts_overlayfs', 'fingerprintd.te', 'flags_health_check.te', 'fs_use', 'fsck.te', 'fsck_untrusted.te', 'fsverity_init.te', 'fwk_bufferhub.te', 'gatekeeperd.te', 'genfs_contexts', 'gpuservice.te', 'gsid.te', 'hal_allocator_default.te', 'halclientdomain.te', 'halserverdomain.te', 'healthd.te', 'heapprofd.te', 'hwservice_contexts', 'hwservicemanager.te', 'idmap.te', 'incident.te', 'incident_helper.te', 'incidentd.te', 'init.te', 'initial_sid_contexts', 'initial_sids', 'inputflinger.te', 'install_recovery.te', 'installd.te', 'iorapd.te', 'isolated_app.te', 'iw.te', 'kernel.te', 'keys.conf', 'keystore.te', 'llkd.te', 'lmkd.te', 'logd.te', 'logpersist.te', 'lpdumpd.te', 'mac_permissions.xml', 'mdnsd.te', 'mediadrmserver.te', 'mediaextractor.te', 'mediametrics.te', 'mediaprovider.te', 'mediaserver.te', 'mediaswcodec.te', 'migrate_legacy_obb_data.te', 'mls', 'mls_decl', 'mls_macros', 'modprobe.te', 'mtp.te', 'netd.te', 'netutils_wrapper.te', 'network_stack.te', 'nfc.te', 'notify_traceur.te', 'otapreopt_chroot.te', 'otapreopt_slot.te', 'perfetto.te', 'performanced.te', 'perfprofd.te', 'platform_app.te', 'policy_capabilities', 'port_contexts', 'postinstall.te', 'postinstall_dexopt.te', 'ppp.te', 'preloads_copy.te', 'preopt2cachename.te', 'priv_app.te', 'profman.te', 'property_contexts', 'racoon.te', 'radio.te', 'recovery.te', 'recovery_persist.te', 'recovery_refresh.te', 'roles_decl', 'rs.te', 'rss_hwm_reset.te', 'runas.te', 'runas_app.te', 'sdcardd.te', 'seapp_contexts', 'secure_element.te', 'security_classes', 'service.te', 'service_contexts', 'servicemanager.te', 'sgdisk.te', 'shared_relro.te', 'shell.te', 'simpleperf_app_runner.te', 'slideshow.te', 'stats.te', 'statsd.te', 'storaged.te', 'su.te', 'surfaceflinger.te', 'system_app.te', 'system_server.te', 'system_server_startup.te', 'system_suspend.te', 'technical_debt.cil', 'tombstoned.te', 'toolbox.te', 'traced.te', 'traced_probes.te', 'traceur_app.te', 'tzdatacheck.te', 'ueventd.te', 'uncrypt.te', 'untrusted_app.te', 'untrusted_app_25.te', 'untrusted_app_27.te', 'untrusted_app_all.te', 'update_engine.te', 'update_engine_common.te', 'update_verifier.te', 'usbd.te', 'users', 'vdc.te', 'vendor_init.te', 'viewcompiler.te', 'virtual_touchpad.te', 'vold.te', 'vold_prepare_subdirs.te', 'vr_hwc.te', 'wait_for_keymaster.te', 'watchdogd.te', 'webview_zygote.te', 'wificond.te', 'wpantund.te', 'zygote.te']
 
 #Writing the Sepolicy
-file = open("dtree/denials.txt", "r")
+file = open("denials.txt", "r")
 lines = file.readlines()
 res = []
 c=0
@@ -15,9 +15,11 @@ for a in lines:
         if(perm[i] == '{'):
             per = perm[i+1]
         if('scontext=' in perm[i]):
-            scon = (perm[i].split('r:')[1]).split(':s0')[0]
-        if('tcontext=' in perm[i]):
-            tcon = (perm[i].split('r:')[1]).split(':s0')[0]
+            scon = (perm[i].split('u:r:')[1]).split(':s0')[0]
+        if('tcontext=' and 'u:object_r:' in perm[i]):
+            tcon = perm[i].split('u:object_r:')[1].split(':s0')[0]
+        if('tcontext=' and 'u:r:' in perm[i]):
+            tcon = perm[i].split('u:r:')[1].split(':s0')[0]
         if('tclass=' in perm[i]):
             tcl = perm[i].split('tclass=')[1]
     b = "allow " + scon + " " + tcon + ":" + tcl + " { " + per + " };"

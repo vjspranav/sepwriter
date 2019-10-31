@@ -6,7 +6,7 @@ priv = ['access_vectors', 'adbd.te', 'apex_test_prepostinstall.te', 'apexd.te', 
 ven = ['file.te', 'file_contexts', 'hal_atrace_default.te', 'hal_audio_default.te', 'hal_audiocontrol_default.te', 'hal_authsecret_default.te', 'hal_bluetooth_btlinux.te', 'hal_bluetooth_default.te', 'hal_bootctl_default.te', 'hal_broadcastradio_default.te', 'hal_camera_default.te', 'hal_cas_default.te', 'hal_configstore_default.te', 'hal_confirmationui_default.te', 'hal_contexthub_default.te', 'hal_drm_default.te', 'hal_dumpstate_default.te', 'hal_evs_default.te', 'hal_face_default.te', 'hal_fingerprint_default.te', 'hal_gatekeeper_default.te', 'hal_gnss_default.te', 'hal_graphics_allocator_default.te', 'hal_graphics_composer_default.te', 'hal_health_default.te', 'hal_health_storage_default.te', 'hal_input_classifier_default.te', 'hal_ir_default.te', 'hal_keymaster_default.te', 'hal_light_default.te', 'hal_lowpan_default.te', 'hal_memtrack_default.te', 'hal_nfc_default.te', 'hal_power_default.te', 'hal_power_stats_default.te', 'hal_radio_config_default.te', 'hal_radio_default.te', 'hal_secure_element_default.te', 'hal_sensors_default.te', 'hal_tetheroffload_default.te', 'hal_thermal_default.te', 'hal_tv_cec_default.te', 'hal_tv_input_default.te', 'hal_usb_default.te', 'hal_vehicle_default.te', 'hal_vibrator_default.te', 'hal_vr_default.te', 'hal_wifi_default.te', 'hal_wifi_hostapd_default.te', 'hal_wifi_offload_default.te', 'hal_wifi_supplicant_default.te', 'mediacodec.te', 'rild.te', 'tee.te', 'vendor_misc_writer.te', 'vendor_modprobe.te', 'vndservice_contexts', 'vndservicemanager.te']
 
 #Writing the Sepolicy
-file = open("dtree/denials.txt", "r")
+file = open("denials.txt", "r")
 lines = file.readlines()
 res = []
 c=0
@@ -16,9 +16,11 @@ for a in lines:
         if(perm[i] == '{'):
             per = perm[i+1]
         if('scontext=' in perm[i]):
-            scon = (perm[i].split('r:')[1]).split(':s0')[0]
-        if('tcontext=' in perm[i]):
-            tcon = (perm[i].split('r:')[1]).split(':s0')[0]
+            scon = (perm[i].split('u:r:')[1]).split(':s0')[0]
+        if('tcontext=' and 'u:object_r:' in perm[i]):
+            tcon = perm[i].split('u:object_r:')[1].split(':s0')[0]
+        if('tcontext=' and 'u:r:' in perm[i]):
+            tcon = perm[i].split('u:r:')[1].split(':s0')[0]        
         if('tclass=' in perm[i]):
             tcl = perm[i].split('tclass=')[1]
     b = "allow " + scon + " " + tcon + ":" + tcl + " { " + per + " };"

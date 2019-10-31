@@ -1,1 +1,1 @@
-allow tee gx_fpd_data_file:dir { create };
+allow tee block_device:blk_file { getattr  read };
