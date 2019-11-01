@@ -32,6 +32,12 @@ The list for the same has been created using the categ.py pressent in the git
    python3 sepwriter.py
    ```
 
+(or)
+3) If your device tree doesnt have folders like sepolicy/public sepolicy/private etc copy the sepwriter_simple.py in the folder of your dtree.
+4) Run the code by executing the following command:
+   ```
+   python3 sepwriter_simple.py
+   ```
 All your denials should be resolved:)
 
 An example of how the code resolves your denials is provided in dtree folder.(Check Readme there for further info)

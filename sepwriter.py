@@ -27,6 +27,7 @@ for a in lines:
         res.append(b) #Adds the resolution to list
 file.close()
 res.sort()
+count = len(res)
 
 #Adding multiple permissions to same line
 for i in range(1,len(res)):
@@ -59,3 +60,6 @@ for i in res:
     file = open("sepolicy/"+fn, 'a')
     file.write(i+"\n")
     file.close
+
+print(count, ' Denials resolved')
+
