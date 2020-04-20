@@ -23,16 +23,19 @@ public class MyClient{
 
 class GUI extends JFrame implements ActionListener {
 	public static int connected=0;
+	public static boolean rulesset=false;
+	public static ArrayList<String> rules;
 	JFrame f=new JFrame();
 	JLabel l1=new JLabel("Path to your logcat file: ");
 	JLabel l2=new JLabel("Path your Device Tree: ");
 	JLabel l3=new JLabel("Your denials are located at: ");	
 	public static JLabel status = new JLabel("Device Status: ", JLabel.CENTER);
 	public static JTextField t1=new JTextField(20);
-	JTextField t2=new JTextField(20);
-	JTextField t3=new JTextField(20);
+	public static JTextField t2=new JTextField(20);
+	public static JTextField t3=new JTextField(20);
 	public static JButton b1=new JButton("Get Denials");
 	public static JButton b2=new JButton("Get Logs");
+	public static JButton b5=new JButton("Write to tree");
 	JButton b3=new JButton("Browse");
 	JButton b4=new JButton("Browse");
 	JPanel p1 = new JPanel(new GridLayout(3, 2, 4, 2)); 
@@ -50,6 +53,7 @@ class GUI extends JFrame implements ActionListener {
 		p1.add(b4);
 		p1.add(l3);		
 		p1.add(t3);
+		p1.add(b5);
 		p2.add(b1);
 		p2.add(b2);
 		p3.add(status);
@@ -57,6 +61,7 @@ class GUI extends JFrame implements ActionListener {
 		b2.addActionListener(this);
 		b3.addActionListener(this);
 		b4.addActionListener(this);
+		b5.addActionListener(this);
 		t3.setEditable(false); 
 		f.add(p1, "North"); 
 		f.add(p2);
@@ -65,10 +70,10 @@ class GUI extends JFrame implements ActionListener {
 		f.setSize(500,200);
 		b1.setEnabled(false);
 		b2.setEnabled(false);
+		b5.setEnabled(false);
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(GUI::run, 0, 1, TimeUnit.SECONDS);
 	}
-
 	private static void run() {
 		int count=0;
 		try {
@@ -102,6 +107,11 @@ class GUI extends JFrame implements ActionListener {
 			b1.setEnabled(true);
 		else
 			b1.setEnabled(false);
+		tmp = new File(t2.getText());
+		if( tmp.exists() && tmp.isDirectory() && rulesset)
+			b5.setEnabled(true);
+		else
+			b5.setEnabled(false);
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -114,20 +124,21 @@ class GUI extends JFrame implements ActionListener {
 				FileWriter writer = new FileWriter(fname);
 				Sepolicy resolver=(Sepolicy)Naming.lookup("rmi://localhost:5000/jp_rmi");  
 				ArrayList<String> denials = resolver.getDenials(s1);
-				ArrayList<String> rules = resolver.getRules(denials);	  
+				rules = resolver.getRules(denials);	  
 				for( String rule : rules){
 					System.out.println("in " + rule.split(" ", 0)[1] + ".te\n" + rule);
 					writer.write("in " + rule.split(" ", 0)[1] + ".te\n" + rule + "\n");
 				}
 				writer.close();
 				}catch(Exception ex){}				
-			t2.setText("Stored at " + fname);
+			t3.setText("Stored at " + fname);
 			Runtime runtime = Runtime.getRuntime();
 			try{    
 				runtime.exec("notepad.exe " + fname);
 			}catch(IOException ex){}
+			rulesset=true;
 		}else if(e.getSource()==b2){
-			int denial;
+			int denial=0;
 			try{
 				Process process = Runtime.getRuntime().exec("adb shell dmesg");
 				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
