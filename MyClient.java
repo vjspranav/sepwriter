@@ -126,6 +126,26 @@ class GUI extends JFrame implements ActionListener {
 			try{    
 				runtime.exec("notepad.exe " + fname);
 			}catch(IOException ex){}
+		}else if(e.getSource()==b2){
+			int denial;
+			try{
+				Process process = Runtime.getRuntime().exec("adb shell dmesg");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String line;
+				FileWriter writer = new FileWriter("log.txt");
+				while ((line = reader.readLine()) != null){ 
+					if(line.contains("avc:"))
+						denial=1;
+					writer.write(line + "\n");
+				}
+				writer.close();
+				if(denial==1){
+					t1.setText("log.txt");
+					JOptionPane.showMessageDialog(f, "Please Press on Get Denials");
+				}else{
+					JOptionPane.showMessageDialog(f, "No Denial in log");
+				}
+			}catch(IOException ex){}
 		}else if(e.getSource()==b3){
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			int returnVal = fc.showOpenDialog(GUI.this);
