@@ -23,9 +23,9 @@ public class MyClient{
 class GUI extends JFrame implements ActionListener {
 	public static int connected=0;
 	JFrame f=new JFrame();
-	JLabel l1=new JLabel("Location of your logcat file: ");
-	JLabel l2=new JLabel("Location of your Device Tree: ");
-	JLabel l3=new JLabel("Your denials are located: ");	
+	JLabel l1=new JLabel("Path to your logcat file: ");
+	JLabel l2=new JLabel("Path your Device Tree: ");
+	JLabel l3=new JLabel("Your denials are located at: ");	
 	public static JLabel status = new JLabel("Device Status: ", JLabel.CENTER);
 	JTextField t1=new JTextField(20);
 	JTextField t2=new JTextField(20);
@@ -34,7 +34,7 @@ class GUI extends JFrame implements ActionListener {
 	JButton b2=new JButton("Get Logs");
 	JButton b3=new JButton("Browse");
 	JButton b4=new JButton("Browse");
-	JPanel p1 = new JPanel(new GridLayout(3, 2)); 
+	JPanel p1 = new JPanel(new GridLayout(3, 2, 4, 2)); 
 	JPanel p2 = new JPanel();
 	JPanel p3 = new JPanel();
 	JFileChooser fc = new JFileChooser();
@@ -61,7 +61,7 @@ class GUI extends JFrame implements ActionListener {
 		f.add(p2);
 		f.add(p3, "South");
 		f.setVisible(true);
-		f.setSize(400,180);
+		f.setSize(500,200);
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(GUI::run, 0, 1, TimeUnit.SECONDS);
 	}
