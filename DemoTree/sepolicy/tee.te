@@ -1,0 +1,2 @@
+allow tee block_device:blk_file { getattr };
+allow tee block_device:blk_file { read };

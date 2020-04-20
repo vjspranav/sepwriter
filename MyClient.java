@@ -137,6 +137,7 @@ class GUI extends JFrame implements ActionListener {
 				runtime.exec("notepad.exe " + fname);
 			}catch(IOException ex){}
 			rulesset=true;
+			JOptionPane.showMessageDialog(f, "Denials(if any) have been resolved");
 		}else if(e.getSource()==b2){
 			int denial=0;
 			try{
@@ -169,6 +170,19 @@ class GUI extends JFrame implements ActionListener {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				t2.setText(fc.getSelectedFile().getPath());
 			}
+		}else if(e.getSource()==b5){
+			try{
+				String fname = t2.getText() + "/sepolicy/";
+				if(fname.contains("\\"))
+					fname = fname.replaceAll("\\\\", "/");
+				for( String rule : rules){
+					System.out.println("Writing to " + fname + rule.split(" ", 0)[1] + ".te\n");
+					FileWriter writer = new FileWriter(fname + rule.split(" ", 0)[1] + ".te", true);
+					writer.write(rule+"\n");
+					writer.close();
+				}
+			}catch(IOException ex){}
+			JOptionPane.showMessageDialog(f, "All rules written in tree");
 		}
 	}
 }
