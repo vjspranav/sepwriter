@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.rmi.*;  
 import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
 // For GUI
 import java.applet.*;
@@ -27,11 +28,11 @@ class GUI extends JFrame implements ActionListener {
 	JLabel l2=new JLabel("Path your Device Tree: ");
 	JLabel l3=new JLabel("Your denials are located at: ");	
 	public static JLabel status = new JLabel("Device Status: ", JLabel.CENTER);
-	JTextField t1=new JTextField(20);
+	public static JTextField t1=new JTextField(20);
 	JTextField t2=new JTextField(20);
 	JTextField t3=new JTextField(20);
-	JButton b1=new JButton("Get Denials");
-	JButton b2=new JButton("Get Logs");
+	public static JButton b1=new JButton("Get Denials");
+	public static JButton b2=new JButton("Get Logs");
 	JButton b3=new JButton("Browse");
 	JButton b4=new JButton("Browse");
 	JPanel p1 = new JPanel(new GridLayout(3, 2, 4, 2)); 
@@ -62,6 +63,8 @@ class GUI extends JFrame implements ActionListener {
 		f.add(p3, "South");
 		f.setVisible(true);
 		f.setSize(500,200);
+		b1.setEnabled(false);
+		b2.setEnabled(false);
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(GUI::run, 0, 1, TimeUnit.SECONDS);
 	}
@@ -82,15 +85,23 @@ class GUI extends JFrame implements ActionListener {
 			status.setText("Device Status: Disconnected");
 			connected=0;
 			status.setForeground(Color.red);
+			b2.setEnabled(false);
 		}else if(count==1){
 			status.setText("Device Status: Connected");
 			connected=1;
 			status.setForeground(Color.green);
+			b2.setEnabled(true);
 		}else if(count>1){
 			status.setText("Device Status: " + count + " devices Connected");
 			connected=0;			
 			status.setForeground(Color.red);
+			b2.setEnabled(false);
 		}
+		File tmp = new File(t1.getText());
+		if( tmp.exists() && !tmp.isDirectory())
+			b1.setEnabled(true);
+		else
+			b1.setEnabled(false);
 	}
 	
 	public void actionPerformed(ActionEvent e){
