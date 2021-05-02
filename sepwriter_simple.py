@@ -10,13 +10,13 @@ for a in lines:
     for i in range(len(perm)):
         if(perm[i] == '{'):
             per = perm[i+1]
-        if('scontext=' and 'u:object_r:' in perm[i]):
+        if('scontext=' in perm[i] and 'u:object_r:' in perm[i]):
             scon = (perm[i].split('u:object_r:')[1]).split(':s0')[0]
-        if('scontext=' and 'u:r:' in perm[i]):
+        if('scontext=' in perm[i] and 'u:r:' in perm[i]):
             scon = (perm[i].split('u:r:')[1]).split(':s0')[0]
-        if('tcontext=' and 'u:object_r:' in perm[i]):
+        if('tcontext=' in perm[i] and 'u:object_r:' in perm[i]):
             tcon = perm[i].split('u:object_r:')[1].split(':s0')[0]
-        if('tcontext=' and 'u:r:' in perm[i]):
+        if('tcontext=' in perm[i] and 'u:r:' in perm[i]):
             tcon = perm[i].split('u:r:')[1].split(':s0')[0]
         if('tclass=' in perm[i]):
             tcl = perm[i].split('tclass=')[1]
